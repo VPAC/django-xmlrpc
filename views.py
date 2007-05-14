@@ -102,3 +102,8 @@ for path, name in settings.XMLRPC_METHODS:
               + '"%s" is not callable in module %s' % (attr, module)
 
     xmlrpcdispatcher.register_function(func, name)
+
+# Finally, register the introspection and multicall methods with the XML-RPC
+# namespace
+xmlrpcdispatcher.register_introspection_functions()
+xmlrpcdispatcher.register_multicall_functions()
