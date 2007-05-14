@@ -43,24 +43,6 @@ class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
     that's for sure).
     """
 
-    def system_methodHelp(self, method):
-        """
-        Returns a help string for a given function. If the function has an
-        _xmlrpc_help attribute, this will be returned. Otherwise the method's
-        docstring will be returned (note, if you want to hide any internal
-        details that you may have included in the docstring, use the first
-        method)
-
-        method
-            The name of the method to return the help details for
-        """
-        func = self.funcs[method]
-
-        try:
-            return func._xmlrpc_help
-        except:
-            return func.__doc__
-
     def system_methodSignature(self, method):
         """
         Returns the signature details for a specified method
