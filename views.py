@@ -32,7 +32,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 from django.core.exceptions import ImproperlyConfigured
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
+from dispatcher import DjangoXMLRPCDispatcher
 from xmlrpclib import Fault
 from django.http import HttpResponse, HttpResponseServerError
 from django.conf import settings
@@ -41,9 +41,9 @@ import sys
 
 # Declare xmlrpcdispatcher correctly depending on our python version
 if sys.version_info[:3] >= (2,5,):
-    xmlrpcdispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
+    xmlrpcdispatcher = DjangoXMLRPCDispatcher(allow_none=False, encoding=None)
 else:
-    xmlrpcdispatcher = SimpleXMLRPCDispatcher()
+    xmlrpcdispatcher = DjangoXMLRPCDispatcher()
 
 def test_xmlrpc(text):
     """
