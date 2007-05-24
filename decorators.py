@@ -1,5 +1,5 @@
 """
-Offers a simple XML-RPC dispatcher for django_xmlrpc
+Offers decorators to make the use of django_xmlrpc a great deal simpler
 
 New BSD License
 ===============
@@ -31,34 +31,19 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
-from inspect import getargspec
 
-class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
+def xmlrpc_func(sig):
     """
-    A simple XML-RPC dispatcher for Django.
+    A decorator for XML-RPC-exposed methods. Adds a signature to an XML-RPC
+    function.
 
-    Subclassess SimpleXMLRPCServer.SimpleXMLRPCDispatcher for the purpose of
-    overriding certain built-in methods (it's nicer than monkey-patching them,
-    that's for sure).
+    sig
+        The signature to give the function, in the form of a dict shaped thus:
+        {'returns': <return_type>, 'args': [<arg1_type>, <arg2_
+         type, <argn_type>,]}
     """
+    def _xmlrpc_func(func):
+        func.xmlrpc_signature = sig
+        return func
 
-    def system_methodSignature(self, method):
-        """
-        Returns the signature details for a specified method
-
-        method
-            The name of the XML-RPC method to get the details for
-        """
-        # See if we can find the method in our funcs dict
-        func = self.funcs[method] # TODO: Handle this better
-
-        try:
-            sig = func.xmlrpc_signature
-        except:
-            sig = {
-                'returns': 'string',
-                'args': ['string' for arg in getargspec(func)[0]],
-            }
-
-        return [sig['returns'],] + sig['args']
+    return _xmlrpc_func

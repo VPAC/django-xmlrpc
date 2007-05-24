@@ -35,13 +35,14 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-from django.core.exceptions import ImproperlyConfigured
-from dispatcher import DjangoXMLRPCDispatcher
+import sys
 from xmlrpclib import Fault
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseServerError
 from django.conf import settings
 from django.shortcuts import render_to_response
-import sys
+from dispatcher import DjangoXMLRPCDispatcher
+from decorators import xmlrpc_func
 
 # Declare xmlrpcdispatcher correctly depending on our python version
 if sys.version_info[:3] >= (2,5,):
@@ -49,6 +50,7 @@ if sys.version_info[:3] >= (2,5,):
 else:
     xmlrpcdispatcher = DjangoXMLRPCDispatcher()
 
+@xmlrpc_func({'returns': 'string', 'args': ['string',]})
 def test_xmlrpc(text):
     """
     Simply returns the args passed to it as a string
