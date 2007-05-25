@@ -1,6 +1,10 @@
 """
 Offers a simple XML-RPC dispatcher for django_xmlrpc
 
+Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
+posted the original SimpleXMLRPCDispatcher to the Django wiki:
+http://code.djangoproject.com/wiki/XML-RPC
+
 New BSD License
 ===============
 Copyright (c) 2007, Graham Binns
@@ -54,7 +58,7 @@ class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
         func = self.funcs[method] # TODO: Handle this better
 
         try:
-            sig = func.xmlrpc_signature
+            sig = func._xmlrpc_signature
         except:
             sig = {
                 'returns': 'string',

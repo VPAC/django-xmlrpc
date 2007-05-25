@@ -1,6 +1,10 @@
 """
 Offers decorators to make the use of django_xmlrpc a great deal simpler
 
+Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
+posted the original SimpleXMLRPCDispatcher to the Django wiki:
+http://code.djangoproject.com/wiki/XML-RPC
+
 New BSD License
 ===============
 Copyright (c) 2007, Graham Binns
@@ -32,18 +36,40 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-def xmlrpc_func(sig):
+def xmlrpc_func(returns, args=[], name=''):
     """
     A decorator for XML-RPC-exposed methods. Adds a signature to an XML-RPC
     function.
 
-    sig
-        The signature to give the function, in the form of a dict shaped thus:
-        {'returns': <return_type>, 'args': [<arg1_type>, <arg2_
-         type, <argn_type>,]}
+    returns
+        The return type of the function. This can either be a string
+        description (e.g. 'string') or a type (e.g. str, bool) etc.
+
+    args
+        A list of the types of the arguments that the function accepts. These
+        can be strings or types or a mixture of the two e.g.
+        [str, bool, 'string']
+
+    name
+        The XML-RPC name to give the function (e.g. metaweblog.getPost) as a
+        string. If this is not specified or otherwise left empty, the method
+        will not be registered with the dispatcher. This allows us to specify
+        signatures for methods that are registered with the dispatcher via
+        settings.XMLRPC_METHODS
     """
     def _xmlrpc_func(func):
-        func.xmlrpc_signature = sig
+        # Add the function to the dispatcher
+        if name:
+            # We do this import here to avoid circular references and what have
+            # you
+            from views import xmlrpcdispatcher
+            xmlrpcdispatcher.register_function(func, name)
+
+        # Add a signature to the function
+        func._xmlrpc_signature = {
+            'returns': returns,
+            'args': args
+        }
         return func
 
     return _xmlrpc_func
