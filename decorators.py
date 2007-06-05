@@ -35,8 +35,11 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
+from xmlrpclib import Fault
+from django.contrib.auth import authenticate
+from django.utils.translation import gettext as _
 
-def xmlrpc_func(returns, args=[], name=''):
+def xmlrpc_func(returns='string', args=[], name=''):
     """
     A decorator for XML-RPC-exposed methods. Adds a signature to an XML-RPC
     function.
@@ -73,3 +76,52 @@ def xmlrpc_func(returns, args=[], name=''):
         return func
 
     return _xmlrpc_func
+
+#fixme: Any standardization?
+AuthenticationFailedCode = 81
+PermissionDeniedCode = 82
+
+class AuthenticationFailedException(Fault):
+    def __init__(self):
+        Fault.__init__(self, AuthenticationFailedCode,
+            _('Username and/or password is incorrect'))
+
+class PermissionDeniedException(Fault):
+    def __init__(self):
+        Fault.__init__(self, PermissionDeniedCode, _('Permission denied'))
+
+# Don't use this decorator when your service is going to be
+# available in an unencrpted/untrusted network.
+# Configure HTTPS transport for your web server.
+def permission_required(perm=None):
+    "Decorator for authentication. (fixme:docstring)"
+    def _dec(func):
+        def __authenticated_call(username, password, *args):
+            try:
+                user = authenticate(username=username, password=password)
+                if not user:
+                    raise AuthenticationFailedException
+                if perm and not user.has_perm(perm):
+                    raise PermissionDeniedException
+            except AuthenticationFailedException:
+#                log.error("Authentication Failed for username '%s'" % username)
+                raise
+            except PermissionDeniedException:
+#                log.error(("Permission Denied. Username: '%s', " + \
+#                    "Required permission: %s") % (username, perm))
+                raise
+            except:
+#                log.error(traceback.format_exc())
+                raise AuthenticationFailedException
+            return func(user, *args)
+
+        #fixme: update _xmlrpc_signature
+        if func.__doc__:
+            __authenticated_call.__doc__ = func.__doc__ + \
+            "\nNote: Authentication is required."""
+            if perm:
+                __authenticated_call.__doc__ += ' this function requires "%s" permission.' % perm
+
+        return __authenticated_call
+
+    return _dec

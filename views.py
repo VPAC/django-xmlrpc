@@ -78,10 +78,34 @@ def handle_xmlrpc(request):
         except Exception, e:
             return HttpResponseServerError()
     else:
-        return render_to_response(settings.XMLRPC_GET_TEMPLATE)
+        methods = xmlrpcdispatcher.system_listMethods()
+        method_list = []
+
+        for method in methods:
+                # right now, my version of SimpleXMLRPCDispatcher always
+                # returns "signatures not supported"... :(
+                # but, in an ideal world it will tell users what args are
+                # expected
+                sig_ = xmlrpcdispatcher.system_methodSignature(method)
+                sig = {
+                    'returns': sig_[0],
+                    'args': ", ".join(sig_[1:]),
+                }
+
+                # this just reads your docblock, so fill it in!
+                help = xmlrpcdispatcher.system_methodHelp(method)
+
+                method_list.append((method, sig, help))
+
+        if hasattr(settings, 'XMLRPC_GET_TEMPLATE'):
+            template = settings.XMLRPC_GET_TEMPLATE
+        else:
+            template = 'xmlrpc/index.html'
+        return render_to_response(template, {'methods': method_list,})
 
 # Load up any methods that have been registered with the server in settings
-for path, name in settings.XMLRPC_METHODS:
+if hasattr(settings, 'XMLRPC_METHODS'):
+  for path, name in settings.XMLRPC_METHODS:
     # if "path" is actually a function, just add it without fuss
     if callable(path):
         xmlrpcdispatcher.register_function(path, name)
