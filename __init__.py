@@ -1,5 +1,4 @@
-"""
-__init__ module for the django_xmlrpc package
+"""__init__ module for the django_xmlrpc package
 
 Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
 posted the original SimpleXMLRPCDispatcher to the Django wiki:
@@ -7,7 +6,7 @@ http://code.djangoproject.com/wiki/XML-RPC
 
 New BSD License
 ===============
-Copyright (c) 2007, Graham Binns
+Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon
 
 All rights reserved.
 

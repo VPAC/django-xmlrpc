@@ -1,5 +1,4 @@
-"""
-Offers a simple XML-RPC dispatcher for django_xmlrpc
+"""Offers a simple XML-RPC dispatcher for django_xmlrpc
 
 Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
 posted the original SimpleXMLRPCDispatcher to the Django wiki:
@@ -7,7 +6,7 @@ http://code.djangoproject.com/wiki/XML-RPC
 
 New BSD License
 ===============
-Copyright (c) 2007, Graham Binns
+Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon
 
 All rights reserved.
 
@@ -35,12 +34,15 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from inspect import getargspec
+from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
+from django.conf import settings
+
+# If we need to debug, now we know
+DEBUG = hasattr(settings, 'XMLRPC_DEBUG') and settings.XMLRPC_DEBUG
 
 class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
-    """
-    A simple XML-RPC dispatcher for Django.
+    """A simple XML-RPC dispatcher for Django.
 
     Subclassess SimpleXMLRPCServer.SimpleXMLRPCDispatcher for the purpose of
     overriding certain built-in methods (it's nicer than monkey-patching them,
@@ -48,14 +50,15 @@ class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
     """
 
     def system_methodSignature(self, method):
-        """
-        Returns the signature details for a specified method
+        """Returns the signature details for a specified method
 
         method
             The name of the XML-RPC method to get the details for
         """
         # See if we can find the method in our funcs dict
-        func = self.funcs[method] # TODO: Handle this better
+        # TODO: Handle this better: We really should return something more
+        # formal than an AttributeError
+        func = self.funcs[method]
 
         try:
             sig = func._xmlrpc_signature
@@ -65,4 +68,4 @@ class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
                 'args': ['string' for arg in getargspec(func)[0]],
             }
 
-        return [sig['returns'],] + sig['args']
+        return [sig['returns']] + sig['args']
