@@ -1,5 +1,9 @@
 """Offers decorators to make the use of django_xmlrpc a great deal simpler
 
+Authors::
+    Graham Binns,
+    Reza Mohammadi
+
 Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
 posted the original SimpleXMLRPCDispatcher to the Django wiki:
 http://code.djangoproject.com/wiki/XML-RPC
@@ -46,6 +50,8 @@ PERMISSION_DENIED_CODE = 82
 class AuthenticationFailedException(Fault):
     """An XML-RPC fault to be raised when a permission_required authentication
     check fails
+
+    Author
     """
     def __init__(self):
         Fault.__init__(self, AUTHENTICATION_FAILED_CODE,
@@ -53,7 +59,8 @@ class AuthenticationFailedException(Fault):
 
 class PermissionDeniedException(Fault):
     """An XML-RPC fault to be raised when a permission_required permission
-    check fails"""
+    check fails
+    """
     def __init__(self):
         Fault.__init__(self, PERMISSION_DENIED_CODE, _('Permission denied'))
 

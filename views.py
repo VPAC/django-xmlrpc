@@ -1,5 +1,9 @@
 """Uses SimpleXMLRPCServer's SimpleXMLRPCDispatcher to serve XML-RPC requests
 
+Authors::
+    Graham Binns,
+    Reza Mohammadi
+
 Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
 posted the original SimpleXMLRPCDispatcher to the Django wiki:
 http://code.djangoproject.com/wiki/XML-RPC

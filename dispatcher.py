@@ -1,5 +1,8 @@
 """Offers a simple XML-RPC dispatcher for django_xmlrpc
 
+Author::
+    Graham Binns
+
 Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who
 posted the original SimpleXMLRPCDispatcher to the Django wiki:
 http://code.djangoproject.com/wiki/XML-RPC
