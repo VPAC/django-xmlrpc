@@ -51,7 +51,7 @@ if sys.version_info[:3] >= (2, 5,):
 else:
     xmlrpcdispatcher = DjangoXMLRPCDispatcher()
 
-@permission_required
+@xmlrpc_func(returns='string', args=['string'])
 def test_xmlrpc(text):
     """Simply returns the args passed to it as a string"""
     return "Here's a response! %s" % str(text)

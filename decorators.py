@@ -70,13 +70,6 @@ def xmlrpc_func(returns='string', args=None, name=''):
         A list of the types of the arguments that the function accepts. These
         can be strings or types or a mixture of the two e.g.
         [str, bool, 'string']
-
-    name
-        The XML-RPC name to give the function (e.g. metaweblog.getPost) as a
-        string. If this is not specified or otherwise left empty, the method
-        will not be registered with the dispatcher. This allows us to specify
-        signatures for methods that are registered with the dispatcher via
-        settings.XMLRPC_METHODS
     """
     # Args should be a list
     if args is None:
@@ -89,13 +82,6 @@ def xmlrpc_func(returns='string', args=None, name=''):
         func
             The function to add the signature to
         """
-        # Add the function to the dispatcher
-        if name:
-            # We do this import here to avoid circular references and what have
-            # you
-            from views import xmlrpcdispatcher
-            xmlrpcdispatcher.register_function(func, name)
-
         # Add a signature to the function
         func._xmlrpc_signature = {
             'returns': returns,
@@ -153,10 +139,19 @@ def permission_required(perm=None):
                 raise AuthenticationFailedException
             return func(user, *args)
 
-        #fixme: update _xmlrpc_signature
+        # Update the function's XML-RPC signature, if the method has one
+        if hasattr(func, '_xmlrpc_signature'):
+            sig = func._xmlrpc_signature
+
+            # We just stick two string args on the front of sign['args'] to
+            # represent username and password
+            sig['args'] = (['string'] * 2) + sig['args']
+            __authenticated_call._xmlrpc_signature = sig
+
+        # Update the function's docstring
         if func.__doc__:
             __authenticated_call.__doc__ = func.__doc__ + \
-            "\nNote: Authentication is required."""
+                "\nNote: Authentication is required."""
             if perm:
                 __authenticated_call.__doc__ += ' this function requires ' \
                                              +  '"%s" permission.' % perm
