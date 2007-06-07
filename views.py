@@ -96,9 +96,13 @@ def handle_xmlrpc(request):
             method_list.append((method, sig, method_help))
 
         if hasattr(settings, 'XMLRPC_GET_TEMPLATE'):
+            # This behaviour is deprecated
+            if settings.DEBUG:
+                print "Use of settings.XMLRPC_GET_TEMPLATE is deprecated " \
+                    + "Please update your code to use django_xmlrpc/templates"
             template = settings.XMLRPC_GET_TEMPLATE
         else:
-            template = 'xmlrpc/index.html'
+            template = 'xmlrpc_get.html'
         return render_to_response(template, {'methods': method_list})
 
 # Load up any methods that have been registered with the server in settings
