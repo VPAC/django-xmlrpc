@@ -1,4 +1,4 @@
-"""__init__ module for the django_xmlrpc package
+"""Offers a simple XML-RPC dispatcher for django_xmlrpc
 
 Author::
     Graham Binns
@@ -37,4 +37,38 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-from views import xmlrpcdispatcher
+from inspect import getargspec
+from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
+from django.conf import settings
+
+# If we need to debug, now we know
+DEBUG = hasattr(settings, 'XMLRPC_DEBUG') and settings.XMLRPC_DEBUG
+
+class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
+    """A simple XML-RPC dispatcher for Django.
+
+    Subclassess SimpleXMLRPCServer.SimpleXMLRPCDispatcher for the purpose of
+    overriding certain built-in methods (it's nicer than monkey-patching them,
+    that's for sure).
+    """
+
+    def system_methodSignature(self, method):
+        """Returns the signature details for a specified method
+
+        method
+            The name of the XML-RPC method to get the details for
+        """
+        # See if we can find the method in our funcs dict
+        # TODO: Handle this better: We really should return something more
+        # formal than an AttributeError
+        func = self.funcs[method]
+
+        try:
+            sig = func._xmlrpc_signature
+        except:
+            sig = {
+                'returns': 'string',
+                'args': ['string' for arg in getargspec(func)[0]],
+            }
+
+        return [sig['returns']] + sig['args']
