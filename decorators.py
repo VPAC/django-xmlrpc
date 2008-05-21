@@ -43,7 +43,7 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext as _
 
 # Some constants for your pleasure
-#fixme: Any standardization?
+#XXX: Any standardization?
 AUTHENTICATION_FAILED_CODE = 81
 PERMISSION_DENIED_CODE = 82
 
@@ -56,6 +56,7 @@ class AuthenticationFailedException(Fault):
     def __init__(self):
         Fault.__init__(self, AUTHENTICATION_FAILED_CODE,
             _('Username and/or password is incorrect'))
+
 
 class PermissionDeniedException(Fault):
     """An XML-RPC fault to be raised when a permission_required permission
@@ -97,6 +98,7 @@ def xmlrpc_func(returns='string', args=None, name=''):
         return func
 
     return _xmlrpc_func
+
 
 # Don't use this decorator when your service is going to be
 # available in an unencrpted/untrusted network.

@@ -41,8 +41,10 @@ from inspect import getargspec
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.conf import settings
 
+
 # If we need to debug, now we know
 DEBUG = hasattr(settings, 'XMLRPC_DEBUG') and settings.XMLRPC_DEBUG
+
 
 class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
     """A simple XML-RPC dispatcher for Django.
@@ -69,6 +71,6 @@ class DjangoXMLRPCDispatcher(SimpleXMLRPCDispatcher):
             sig = {
                 'returns': 'string',
                 'args': ['string' for arg in getargspec(func)[0]],
-            }
+                }
 
         return [sig['returns']] + sig['args']

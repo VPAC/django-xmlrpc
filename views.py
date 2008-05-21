@@ -46,8 +46,10 @@ from django.shortcuts import render_to_response
 from dispatcher import DjangoXMLRPCDispatcher
 from decorators import xmlrpc_func, permission_required
 
+
 # We create a local DEBUG variable from the data in settings.
 DEBUG = hasattr(settings, 'XMLRPC_DEBUG') and settings.XMLRPC_DEBUG
+
 
 # Declare xmlrpcdispatcher correctly depending on our python version
 if sys.version_info[:3] >= (2, 5,):
@@ -55,10 +57,12 @@ if sys.version_info[:3] >= (2, 5,):
 else:
     xmlrpcdispatcher = DjangoXMLRPCDispatcher()
 
+
 @xmlrpc_func(returns='string', args=['string'])
 def test_xmlrpc(text):
     """Simply returns the args passed to it as a string"""
     return "Here's a response! %s" % str(text)
+
 
 def handle_xmlrpc(request):
     """Handles XML-RPC requests. All XML-RPC calls should be forwarded here
@@ -105,6 +109,7 @@ def handle_xmlrpc(request):
             template = 'xmlrpc_get.html'
         return render_to_response(template, {'methods': method_list})
 
+
 # Load up any methods that have been registered with the server in settings
 if hasattr(settings, 'XMLRPC_METHODS'):
     for path, name in settings.XMLRPC_METHODS:
@@ -134,6 +139,7 @@ if hasattr(settings, 'XMLRPC_METHODS'):
                 + '"%s" is not callable in module %s' % (attr, module)
 
         xmlrpcdispatcher.register_function(func, name)
+
 
 # Finally, register the introspection and multicall methods with the XML-RPC
 # namespace
