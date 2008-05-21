@@ -68,9 +68,8 @@ class PermissionDeniedException(Fault):
         Fault.__init__(self, PERMISSION_DENIED_CODE, _('Permission denied'))
 
 
-def xmlrpc_func(returns='string', args=None, name=''):
-    """A decorator for XML-RPC-exposed methods. Adds a signature to an XML-RPC
-    function.
+def xmlrpc_func(returns='string', args=None, name=None):
+    """Adds a signature to an XML-RPC function and register it with the dispatcher.
 
     returns
         The return type of the function. This can either be a string
@@ -85,6 +84,7 @@ def xmlrpc_func(returns='string', args=None, name=''):
     if args is None:
         args = []
 
+
     def _xmlrpc_func(func):
         """Inner function for XML-RPC method decoration. Adds a signature to
         the method passed to it.
@@ -92,14 +92,20 @@ def xmlrpc_func(returns='string', args=None, name=''):
         func
             The function to add the signature to
         """
+        # If name is not None, register the method with the dispatcher.
+        from django_xmlrpc.views import xmlrpcdispatcher
+        if name is not None:
+            xmlrpcdispatcher.register_function(func, name)
+
         # Add a signature to the function
         func._xmlrpc_signature = {
             'returns': returns,
             'args': args
-        }
+            }
         return func
 
     return _xmlrpc_func
+
 
 
 # Don't use this decorator when your service is going to be
