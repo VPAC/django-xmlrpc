@@ -42,10 +42,12 @@ from xmlrpclib import Fault
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext as _
 
+
 # Some constants for your pleasure
 #XXX: Any standardization?
 AUTHENTICATION_FAILED_CODE = 81
 PERMISSION_DENIED_CODE = 82
+
 
 class AuthenticationFailedException(Fault):
     """An XML-RPC fault to be raised when a permission_required authentication
