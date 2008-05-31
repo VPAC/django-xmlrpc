@@ -68,7 +68,7 @@ class PermissionDeniedException(Fault):
         Fault.__init__(self, PERMISSION_DENIED_CODE, _('Permission denied'))
 
 
-def xmlrpc_func(returns='string', args=None, name=None):
+def xmlrpc_method(returns='string', args=None, name=None):
     """Adds a signature to an XML-RPC function and register it with the dispatcher.
 
     returns
@@ -106,6 +106,7 @@ def xmlrpc_func(returns='string', args=None, name=None):
 
     return _xmlrpc_func
 
+xmlrpc_func = xmlrpc_method
 
 
 # Don't use this decorator when your service is going to be
