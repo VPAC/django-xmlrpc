@@ -71,11 +71,11 @@ def handle_xmlrpc(request):
         The HttpRequest object that carries the XML-RPC call. If this is a
         GET request, nothing will happen (we only accept POST requests)
     """
-    response = HttpResponse()
     if request.method == "POST":
         if DEBUG:
             print request.raw_post_data
         try:
+            response = HttpResponse(content_type='text/xml')
             response.write(
                 xmlrpcdispatcher._marshaled_dispatch(request.raw_post_data))
             if DEBUG:
