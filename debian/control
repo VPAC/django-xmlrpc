@@ -8,6 +8,6 @@ Standards-Version: 3.8.3.0
 Package: django-xmlrpc
 Architecture: all
 Homepage: https://launchpad.net/django-xmlrpc
-Depends: ${misc:Depends}, ${python:Depends}, python-django (>= 1.2)
+Depends: ${misc:Depends}, ${python:Depends}, python-django (>= 1.1)
 Description: XMLRPC library for Django
  django_xmlrpc offers a means by which a Django developer can expose their views (or indeed any other function) using XML-RPC.

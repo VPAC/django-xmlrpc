@@ -45,7 +45,14 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from dispatcher import DjangoXMLRPCDispatcher
 from decorators import xmlrpc_func, permission_required
-from django.views.decorators.csrf import csrf_exempt
+try:
+    from django.views.decorators.csrf import csrf_exempt
+except ImportError:
+    class csrf_exempt(object):
+        def __init__(self, f):
+            self.f = f
+        def __call__(self, request):
+            return self.f(request)
 
 
 # We create a local DEBUG variable from the data in settings.
