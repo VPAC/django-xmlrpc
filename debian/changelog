@@ -1,3 +1,9 @@
+django-xmlrpc (0.1debian3) testing; urgency=low
+
+  * Require Django >= 1.2.
+
+ -- Brian May <bam@debian.org>  Fri, 23 Jul 2010 16:14:21 +1000
+
 django-xmlrpc (0.1debian2) testing; urgency=low
 
   * Override CSRF check.
