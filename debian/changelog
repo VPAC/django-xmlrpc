@@ -1,0 +1,5 @@
+django-xmlrpc (0.1debian1) testing; urgency=low
+
+  * Initial release. Created from upstream trunk on this date.
+
+ -- Sam Morrison <sam@vpac.org>  Mon, 22 Mar 2010 13:30:13 +1100

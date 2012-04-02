@@ -1,0 +1,13 @@
+Source: django-xmlrpc
+Section: python
+Priority: optional
+Maintainer: Sam Morrison <sam@vpac.org>
+Build-Depends: debhelper (>=7.0.0), python (>= 2.4), python-support (>= 0.6), cdbs (>= 0.4.49)
+Standards-Version: 3.8.3.0
+
+Package: django-xmlrpc
+Architecture: all
+Homepage: https://launchpad.net/django-xmlrpc
+Depends: ${misc:Depends}, ${python:Depends}, python-django (>= 1.0)
+Description: XMLRPC library for Django
+ django_xmlrpc offers a means by which a Django developer can expose their views (or indeed any other function) using XML-RPC.
