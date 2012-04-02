@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: django-xmlrpc
+Version: 0.1debian1
+Summary: XMLRPC library for Django
+Home-page: https://launchpad.net/django-xmlrpc
+Author: Graham Binns
+Author-email: graham@grahambinns.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
