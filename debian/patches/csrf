@@ -1,0 +1,41 @@
+Description: Fix CSRF processing.
+Author: Brian May <bam@debian.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- django-xmlrpc-0.1.orig/django_xmlrpc/views.py
++++ django-xmlrpc-0.1/django_xmlrpc/views.py
+@@ -45,6 +45,14 @@ from django.conf import settings
+ from django.shortcuts import render_to_response
+ from dispatcher import DjangoXMLRPCDispatcher
+ from decorators import xmlrpc_func, permission_required
++try:
++    from django.views.decorators.csrf import csrf_exempt
++except ImportError:
++    class csrf_exempt(object):
++        def __init__(self, f):
++            self.f = f
++        def __call__(self, request):
++            return self.f(request)
+ 
+ 
+ # We create a local DEBUG variable from the data in settings.
+@@ -64,6 +72,7 @@ def test_xmlrpc(text):
+     return "Here's a response! %s" % str(text)
+ 
+ 
++@csrf_exempt
+ def handle_xmlrpc(request):
+     """Handles XML-RPC requests. All XML-RPC calls should be forwarded here
+ 
