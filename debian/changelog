@@ -1,3 +1,10 @@
+django-xmlrpc (0.1-6) unstable; urgency=low
+
+  * Update Debian packaging.
+  * Avoid circular import loop.
+
+ -- Brian May <bam@debian.org>  Wed, 29 May 2013 09:08:17 +1000
+
 django-xmlrpc (0.1-5) unstable; urgency=low
 
   * Fix various packaging issues.
